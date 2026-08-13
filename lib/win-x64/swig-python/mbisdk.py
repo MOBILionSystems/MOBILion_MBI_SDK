@@ -1332,6 +1332,7 @@ CCS_DEGREE = cvar.CCS_DEGREE
 CCS_AT_SURF = cvar.CCS_AT_SURF
 CCS_CCAPS = cvar.CCS_CCAPS
 GAS_TYPE = cvar.GAS_TYPE
+CCS_GAS_MASS = cvar.CCS_GAS_MASS
 VERSION = cvar.VERSION
 ACQ_AGT_FILEPATH = cvar.ACQ_AGT_FILEPATH
 ACQ_BOARD_TEMP = cvar.ACQ_BOARD_TEMP
@@ -1580,6 +1581,9 @@ class Frame(object):
 
     def GetFrameIMMSSpectrumAsCSR(self, *args):
         return _mbisdk.Frame_GetFrameIMMSSpectrumAsCSR(self, *args)
+
+    def GetFrameIMMSSpectrumAsCOO(self, *args):
+        return _mbisdk.Frame_GetFrameIMMSSpectrumAsCOO(self, *args)
 
     def GetFrameDataAsCSRComponents(self):
         return _mbisdk.Frame_GetFrameDataAsCSRComponents(self)
@@ -1900,6 +1904,9 @@ class MBIFile(object):
     def GetRtTicList(self):
         return _mbisdk.MBIFile_GetRtTicList(self)
 
+    def GetFrameTIC(self):
+        return _mbisdk.MBIFile_GetFrameTIC(self)
+
     def getMetaDataItem(self, key):
         return _mbisdk.MBIFile_getMetaDataItem(self, key)
 
@@ -2090,6 +2097,7 @@ class EyeOnCcsCalibration(object):
 
     def __init__(self, *args):
         _mbisdk.EyeOnCcsCalibration_swiginit(self, _mbisdk.new_EyeOnCcsCalibration(*args))
+    __swig_destroy__ = _mbisdk.delete_EyeOnCcsCalibration
     BAD_FILE_POINTER = _mbisdk.EyeOnCcsCalibration_BAD_FILE_POINTER
     BAD_FRAME_INDEX = _mbisdk.EyeOnCcsCalibration_BAD_FRAME_INDEX
     BAD_MASS_VALUE = _mbisdk.EyeOnCcsCalibration_BAD_MASS_VALUE
@@ -2128,11 +2136,14 @@ class EyeOnCcsCalibration(object):
     def GetErrorOutput(self):
         return _mbisdk.EyeOnCcsCalibration_GetErrorOutput(self)
 
-    def AdjustCCSValue(self, unadjusted_ccs, dbArrivalTime, Mz_ion):
-        return _mbisdk.EyeOnCcsCalibration_AdjustCCSValue(self, unadjusted_ccs, dbArrivalTime, Mz_ion)
+    def UnReduceCCSValue(self, unadjusted_ccs, M_ion, Z):
+        return _mbisdk.EyeOnCcsCalibration_UnReduceCCSValue(self, unadjusted_ccs, M_ion, Z)
 
-    def InvertAdjustCCSValue(self, ccs_value, Mz_ion):
-        return _mbisdk.EyeOnCcsCalibration_InvertAdjustCCSValue(self, ccs_value, Mz_ion)
+    def ReduceCCSValue(self, ccs_value, M_ion, Z):
+        return _mbisdk.EyeOnCcsCalibration_ReduceCCSValue(self, ccs_value, M_ion, Z)
+
+    def ReductionFactor(self, M_ion, Z):
+        return _mbisdk.EyeOnCcsCalibration_ReductionFactor(self, M_ion, Z)
 
     def ComputeGasMass(self, *args):
         return _mbisdk.EyeOnCcsCalibration_ComputeGasMass(self, *args)
@@ -2145,6 +2156,12 @@ class EyeOnCcsCalibration(object):
 
     def SetGasMass(self, gas_mass_input):
         return _mbisdk.EyeOnCcsCalibration_SetGasMass(self, gas_mass_input)
+
+    def GetGasMass(self):
+        return _mbisdk.EyeOnCcsCalibration_GetGasMass(self)
+
+    def GetTofCalibration(self):
+        return _mbisdk.EyeOnCcsCalibration_GetTofCalibration(self)
 
     def ChooseGoodRoot(self, root_1, root_2, ion_mass):
         return _mbisdk.EyeOnCcsCalibration_ChooseGoodRoot(self, root_1, root_2, ion_mass)
@@ -2163,14 +2180,28 @@ class EyeOnCcsCalibration(object):
     CCS_BAD_FRAME_INDEX_HEADER = _mbisdk.EyeOnCcsCalibration_CCS_BAD_FRAME_INDEX_HEADER
     CCS_BAD_FRAME_INDEX_FOOTER = _mbisdk.EyeOnCcsCalibration_CCS_BAD_FRAME_INDEX_FOOTER
     CCS_BAD_FILE_POINTER = _mbisdk.EyeOnCcsCalibration_CCS_BAD_FILE_POINTER
+    CCS_MISSING_TOF_CALIBRATION = _mbisdk.EyeOnCcsCalibration_CCS_MISSING_TOF_CALIBRATION
     CCS_MISSING_CCS_GAS_TYPE = _mbisdk.EyeOnCcsCalibration_CCS_MISSING_CCS_GAS_TYPE
+    CCS_BAD_GAS_MASS = _mbisdk.EyeOnCcsCalibration_CCS_BAD_GAS_MASS
     CCS_ARRIVAL_TIME_HEADER = _mbisdk.EyeOnCcsCalibration_CCS_ARRIVAL_TIME_HEADER
     CCS_BAD_MASS_VALUE_PART_2 = _mbisdk.EyeOnCcsCalibration_CCS_BAD_MASS_VALUE_PART_2
     CCS_BAD_ADJUSTMENT_PART_2 = _mbisdk.EyeOnCcsCalibration_CCS_BAD_ADJUSTMENT_PART_2
-    __swig_destroy__ = _mbisdk.delete_EyeOnCcsCalibration
 
 # Register EyeOnCcsCalibration in _mbisdk:
 _mbisdk.EyeOnCcsCalibration_swigregister(EyeOnCcsCalibration)
+class NonReducedEyeOnCcsCalibration(EyeOnCcsCalibration):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        _mbisdk.NonReducedEyeOnCcsCalibration_swiginit(self, _mbisdk.new_NonReducedEyeOnCcsCalibration(*args))
+
+    def ReductionFactor(self, M_ion, Z):
+        return _mbisdk.NonReducedEyeOnCcsCalibration_ReductionFactor(self, M_ion, Z)
+    __swig_destroy__ = _mbisdk.delete_NonReducedEyeOnCcsCalibration
+
+# Register NonReducedEyeOnCcsCalibration in _mbisdk:
+_mbisdk.NonReducedEyeOnCcsCalibration_swigregister(NonReducedEyeOnCcsCalibration)
 class MBIFileHDF5Adapter(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
