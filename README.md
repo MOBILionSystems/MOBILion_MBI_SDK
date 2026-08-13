@@ -1,6 +1,6 @@
 # MOBILion MBI SDK
 
-C++ SDK for reading MOBILion's MBI file format — the ion mobility / mass spectrometry data files
+C++ SDK for reading MOBILion Systems's MBI file format: the ion mobility - mass spectrometry data files
 produced by the MOBIE® EyeOn acquisition system.
 
 Release `1.13.1`
