@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['frag_5fenergy_0',['frag_energy',['../class_m_b_i_s_d_k_1_1_fragmentation_metadata.html#a628d24cd6cd785c1c445ee390386ab6e',1,'MBISDK::FragmentationMetadata']]],
+  ['frame_5fce_5fparse_5fbad_5ffrag_5fdata_1',['FRAME_CE_PARSE_BAD_FRAG_DATA',['../class_m_b_i_s_d_k_1_1_frame.html#a0805d218cc0079ded203759a31566bd7',1,'MBISDK::Frame']]],
+  ['frame_5fce_5fparse_5ferror_5fheader_2',['FRAME_CE_PARSE_ERROR_HEADER',['../class_m_b_i_s_d_k_1_1_frame.html#a20ed0c9e76f9d9c2bd373705769e6fcb',1,'MBISDK::Frame']]],
+  ['frame_5fce_5fparse_5finvalid_5fdata_3',['FRAME_CE_PARSE_INVALID_DATA',['../class_m_b_i_s_d_k_1_1_frame.html#a4741563b42feee3ecc4a84d283efa30d',1,'MBISDK::Frame']]],
+  ['frame_5fce_5fparse_5fmissing_5fdata_4',['FRAME_CE_PARSE_MISSING_DATA',['../class_m_b_i_s_d_k_1_1_frame.html#a7bcb8223ba472d02acb02152f1ecc685',1,'MBISDK::Frame']]],
+  ['frame_5fdata_5',['FRAME_DATA',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_name.html#ab49e8d7469d7b8d272ced586eadd7f6d',1,'MBISDK::MBIAttr::Name']]],
+  ['frame_5fmetadata_6',['FRAME_METADATA',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_name.html#aa2f2925563096b33789518ac7638d4ca',1,'MBISDK::MBIAttr::Name']]],
+  ['frm_5fcollision_5fenergy_7',['FRM_COLLISION_ENERGY',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a8e7009e3adf7fbaf88f570c05bae9ad5',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fdt_5fperiod_8',['FRM_DT_PERIOD',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a29e0b71147cc14f1ecd7c1f5933900a3',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5ffrag_5fenergy_9',['FRM_FRAG_ENERGY',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a5d6f011b89c898a35cee2b215258931a',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5ffrag_5fenergy_5fmode_10',['FRM_FRAG_ENERGY_MODE',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a7a2ec027484e976c85e11249cd03a72f',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5ffrag_5fop_5fmode_11',['FRM_FRAG_OP_MODE',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a2d150d6898fe0ff1db781418f611954a',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fintensity_5flimit_12',['FRM_INTENSITY_LIMIT',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#ae4ffbae31b3fb44a6cad248e882582a3',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fmetadata_5fid_13',['FRM_METADATA_ID',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#abe7463d7c1639c55a4617fa38b04db65',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fmethod_5fname_14',['FRM_METHOD_NAME',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a8384eb7b2a9746bc5f6239c1b7218254',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fmethod_5fstate_15',['FRM_METHOD_STATE',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#aa79df451c6511524770d02ca8b71e10b',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fmux_5fgate_16',['FRM_MUX_GATE',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#afc6536dac459904fda08cd2017bd4b24',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fmux_5fsequence_17',['FRM_MUX_SEQUENCE',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a3b340a6632fa29698a5220065d3f3f28',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fnum_5fmicroframes_18',['FRM_NUM_MICROFRAMES',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a740c409c1404e3ed1993411b92ca708f',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fnum_5fscans_19',['FRM_NUM_SCANS',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a3cd167d0487e4da8e3a76b4c7b19d8bc',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fpolarity_20',['FRM_POLARITY',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a25313e3081fd743294c89c484aef386a',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5fstart_5ftime_21',['FRM_START_TIME',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#a449eaad16326eedf39d3fe6f59642692',1,'MBISDK::MBIAttr::FrameKey']]],
+  ['frm_5ftimiing_5fintents_22',['FRM_TIMIING_INTENTS',['../class_m_b_i_s_d_k_1_1_m_b_i_attr_1_1_frame_key.html#af4e44ee49376ac95a0daea34cc0f56ad',1,'MBISDK::MBIAttr::FrameKey']]]
+];

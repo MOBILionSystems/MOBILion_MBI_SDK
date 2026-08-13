@@ -1,0 +1,5 @@
+var searchData=
+[
+  ['fragmentationmetadata_0',['FragmentationMetadata',['../class_m_b_i_s_d_k_1_1_fragmentation_metadata.html#ad7009b3d2d75f36108177c17b79bb6d5',1,'MBISDK::FragmentationMetadata']]],
+  ['frame_1',['frame',['../class_m_b_i_s_d_k_1_1_frame.html#a685d93dc71a8f96413de5c0990125366',1,'MBISDK::Frame::Frame()'],['../class_m_b_i_s_d_k_1_1_frame.html#a1ecc93469a33039ed4813b08ca2648b6',1,'MBISDK::Frame::Frame(std::shared_ptr&lt; FrameMetadata &gt; metadata, MBISDK::MBIFile *pFile)'],['../class_m_b_i_s_d_k_1_1_frame.html#a0c326346653b1609eda9e02ae37ba0ed',1,'MBISDK::Frame::Frame(std::shared_ptr&lt; FrameMetadata &gt; metadata, MBISDK::MBIFile *pFile, std::shared_ptr&lt; std::vector&lt; int32_t &gt; &gt; inputSparseSampleIntensities, std::shared_ptr&lt; std::vector&lt; std::pair&lt; int64_t, int64_t &gt; &gt; &gt; inputGates, std::shared_ptr&lt; std::vector&lt; int64_t &gt; &gt; inputSampleOffsets, std::shared_ptr&lt; std::vector&lt; int64_t &gt; &gt; inputGateIndexOffsets, std::shared_ptr&lt; std::vector&lt; int64_t &gt; &gt; inputVecAtTic, std::shared_ptr&lt; std::vector&lt; double &gt; &gt; inputVecTriggerTimeStamps)']]]
+];

@@ -1,0 +1,15 @@
+var searchData=
+[
+  ['calpolynomial_0',['CalPolynomial',['../class_m_b_i_s_d_k_1_1_cal_polynomial.html#afd14a55c144a5fe01426ff5bb4362af4',1,'MBISDK::CalPolynomial']]],
+  ['ccsbisectionsearch_1',['CCSBisectionSearch',['../class_m_b_i_s_d_k_1_1_c_c_s_bisection_search.html#ac00a7f7d573b7e4520a87b08a06a9e0f',1,'MBISDK::CCSBisectionSearch']]],
+  ['ccscalibration_2',['ccscalibration',['../class_m_b_i_s_d_k_1_1_ccs_calibration.html#a5de1ae73b1fcda7dd1d5743febbd04fb',1,'MBISDK::CcsCalibration::CcsCalibration(double sampleRate, const char *jsonString)'],['../class_m_b_i_s_d_k_1_1_ccs_calibration.html#a73385b7e8213235183596f0a01a99d17',1,'MBISDK::CcsCalibration::CcsCalibration(double sampleRate, eCalibrationType type, std::vector&lt; double &gt; coefficients)'],['../class_m_b_i_s_d_k_1_1_ccs_calibration.html#a4e0878c7bcdc6658c425d1469d5727fc',1,'MBISDK::CcsCalibration::CcsCalibration()']]],
+  ['ccstoarrivaltime_3',['ccstoarrivaltime',['../class_m_b_i_s_d_k_1_1_eye_on_ccs_calibration.html#a15d159d43b5078fa5bae2b2d489fcf51',1,'MBISDK::EyeOnCcsCalibration::CCSToArrivalTime(double ccs_angstroms_squared, double ion_mass)'],['../class_m_b_i_s_d_k_1_1_eye_on_ccs_calibration.html#af9683983fca78ffd44f5dca7837a4d39',1,'MBISDK::EyeOnCcsCalibration::CCSToArrivalTime(double ccs_angstroms_squared, double ion_mass, bool doBoundsCheck)']]],
+  ['checkframeindex_4',['CheckFrameIndex',['../class_m_b_i_s_d_k_1_1_m_b_i_file.html#ad57be5fbac8656ae743866597a71ee03',1,'MBISDK::MBIFile']]],
+  ['choosegoodroot_5',['ChooseGoodRoot',['../class_m_b_i_s_d_k_1_1_eye_on_ccs_calibration.html#a9bcc849fd1d20a8b7394686f461d06e3',1,'MBISDK::EyeOnCcsCalibration']]],
+  ['close_6',['close',['../class_m_b_i_s_d_k_1_1_m_b_i_file.html#a61ebcb7a21f631e8bac69c40fdaf03ad',1,'MBISDK::MBIFile::Close()'],['../class_m_b_i_s_d_k_1_1_m_b_i_file_h_d_f5_adapter.html#a31cc04d29db6b1fd58ed6f53fd11515c',1,'MBISDK::MBIFileHDF5Adapter::Close()'],['../class_m_b_i_s_d_k_1_1_metadata.html#aedc989dd71549b1fc0c4cd7c5cecde06',1,'MBISDK::Metadata::Close()']]],
+  ['coefficients_7',['coefficients',['../class_m_b_i_s_d_k_1_1_ccs_calibration.html#af4ae7ccc2de5fa53a5e83f827c4cbc49',1,'MBISDK::CcsCalibration::Coefficients()'],['../class_m_b_i_s_d_k_1_1_global_ccs_calibration.html#ad6ae25913bbee24321554b27abab204b',1,'MBISDK::GlobalCcsCalibration::Coefficients()']]],
+  ['computegasmass_8',['computegasmass',['../class_m_b_i_s_d_k_1_1_eye_on_ccs_calibration.html#a3247e872033dae96dba332d1a7180d1b',1,'MBISDK::EyeOnCcsCalibration::ComputeGasMass(std::string gas_string)'],['../class_m_b_i_s_d_k_1_1_eye_on_ccs_calibration.html#a0b64d2ac5f88df3b8285cb1ae92cfe75',1,'MBISDK::EyeOnCcsCalibration::ComputeGasMass()']]],
+  ['copy_9',['Copy',['../class_m_b_i_s_d_k_1_1_metadata.html#a8cbf1a2e367f564ae8b392dbff38f25a',1,'MBISDK::Metadata']]],
+  ['csrimmsspectrum_10',['CSRIMMSSpectrum',['../struct_m_b_i_s_d_k_1_1_c_s_r_i_m_m_s_spectrum.html#a94bc8d2edef279acc2887d7d0e74342a',1,'MBISDK::CSRIMMSSpectrum']]],
+  ['csscoefficients_11',['CSSCoefficients',['../class_m_b_i_s_d_k_1_1_global_ccs_calibration.html#ad008241a0a0121e83fd3d1c2a736f078',1,'MBISDK::GlobalCcsCalibration']]]
+];
