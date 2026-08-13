@@ -97,7 +97,7 @@ Full API documentation is in `doc/html/index.html`.
 
 ## Setting up a project (Windows)
 
-1. Copy `include/` into your project (or add it to your include path).
+1. Add `include/` to your include path.
 2. Add `MBI_SDK.lib` to your linker inputs, and `lib/win-x64` to your library directories.
 3. Copy `MBI_SDK.dll` next to your executable (or somewhere on `PATH`) so it can be found at runtime.
 
