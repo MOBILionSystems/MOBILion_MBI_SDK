@@ -3,7 +3,7 @@
  * MBI Data Access API                                             *
  * Copyright 2026 MOBILion Systems, Inc. ALL RIGHTS RESERVED       *
  * Author: Greg Van Aken                                           *
- * release-1.12.5.10441
+ * release-1.13.1.11240
  * For full license terms, see the LICENSE.md file in the root of  *
  * this repository.                                                *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -291,6 +291,8 @@ namespace MBISDK
 			static constexpr const char* CCS_CCAPS = "ccaps";
 			/// @brief GAS_TYPE metdata name
 			static constexpr const char* GAS_TYPE = "Mass Flow.gas type";
+			/// @brief CCS_GAS_MASS metdata name
+			static constexpr const char* CCS_GAS_MASS = "gas mass";
 			/// @brief VERSION calibration version
 			static constexpr const char* VERSION = "version";
 		};

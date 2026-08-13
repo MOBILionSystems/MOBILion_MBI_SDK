@@ -8,6 +8,7 @@ var searchData=
   ['mbimerge_5',['MBIMerge',['../class_m_b_i_s_d_k_1_1_m_b_i_merge.html',1,'MBISDK']]],
   ['mbinumeric_6',['MBINumeric',['../class_m_b_i_s_d_k_1_1_m_b_i_numeric.html',1,'']]],
   ['mbisdkemptyfile_7',['MBISDKEmptyFile',['../class_m_b_i_s_d_k_1_1_exceptions_1_1_m_b_i_s_d_k_empty_file.html',1,'MBISDK::Exceptions']]],
-  ['mbisdkunknowncaseexception_8',['MBISDKUnknownCaseException',['../class_m_b_i_s_d_k_1_1_exceptions_1_1_m_b_i_s_d_k_unknown_case_exception.html',1,'MBISDK::Exceptions']]],
-  ['metadata_9',['Metadata',['../class_m_b_i_s_d_k_1_1_metadata.html',1,'MBISDK']]]
+  ['mbisdkmissingchromatogram_8',['MBISDKMissingChromatogram',['../class_m_b_i_s_d_k_1_1_exceptions_1_1_m_b_i_s_d_k_missing_chromatogram.html',1,'MBISDK::Exceptions']]],
+  ['mbisdkunknowncaseexception_9',['MBISDKUnknownCaseException',['../class_m_b_i_s_d_k_1_1_exceptions_1_1_m_b_i_s_d_k_unknown_case_exception.html',1,'MBISDK::Exceptions']]],
+  ['metadata_10',['Metadata',['../class_m_b_i_s_d_k_1_1_metadata.html',1,'MBISDK']]]
 ];

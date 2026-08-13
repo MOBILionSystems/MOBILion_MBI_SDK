@@ -3,7 +3,7 @@
  * MBI Data Access API                                             *
  * Copyright 2026 MOBILion Systems, Inc. ALL RIGHTS RESERVED       *
  * Author: Bennett Kalafut                                         *
- * release-1.12.5.10441
+ * release-1.13.1.11240
  * For full license terms, see the LICENSE.md file in the root of  *
  * this repository.                                                *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -54,6 +54,36 @@ namespace MBISDK
 			}
 			return accumulator;
 		}
+	};
+
+    template<typename T>
+	struct COOIMMSSpectrum : public COOArray<T>
+	{
+	    std::vector<double> mz;
+
+		/// @brief A move constructor taking a cooArray as input.  The m/z array will be left blank.
+		/// @param cooArray
+		explicit COOIMMSSpectrum<T>(COOArray<T>&& cooArray)
+		{
+            this->nnz = cooArray.nnz; // The "this" pointer always implicitly resolves.
+            this->nRows = cooArray.nRows;
+            this->nColumns = cooArray.nColumns;
+			this->isZeroPadded = cooArray.isZeroPadded;
+            this->data = std::move(cooArray.data);
+            this->rowIndices = std::move(cooArray.rowIndices);
+            this->columnIndices = std::move(cooArray.columnIndices);
+        }
+
+		explicit COOIMMSSpectrum<T>(const COOArray<T>& cooArray)
+		{
+            this->nnz = cooArray.nnz;
+            this->nRows = cooArray.nRows;
+            this->nColumns = cooArray.nColumns;
+			this->isZeroPadded = cooArray.isZeroPadded;
+            this->data = cooArray.data; // lvalue assignment of vector is a full copy, incl. deep copy of the data array
+            this->rowIndices = cooArray.rowIndices;
+            this->columnIndices = cooArray.columnIndices;
+        }
 	};
 
     /*! @struct MBISDK::CSRArray

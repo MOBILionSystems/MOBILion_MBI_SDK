@@ -3,7 +3,7 @@
  * MBI Data Access API                                             *
  * Copyright 2026 MOBILion Systems, Inc. ALL RIGHTS RESERVED       *
  * Author: Douglas Bodden                                          *
- * release-1.12.5.10441
+ * release-1.13.1.11240
  * For full license terms, see the LICENSE.md file in the root of  *
  * this repository.                                                *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -32,6 +32,7 @@
 
 #include <cstdio>
 #include <fstream>
+#include <memory>
 #include "MBIFileHDF5Adapter.h"
 #include <set>
 
@@ -130,10 +131,8 @@ extern "C"
 
 		/// <summary>
 		/// The MBIFile's mass calibration.
-		/// This method will be removed in a future version of MBI SDK.
 		/// </summary>
 		/// <returns></returns>
-		[[deprecated("Access mass calibrations through Frame objects.")]]
 		MBISDK::TofCalibration GetCalibration();
 
         /// <summary>
@@ -143,9 +142,20 @@ extern "C"
 
 		/// <summary>
 		/// To obtain the EyeOn CCS calibration data, which is used for analyzing collision cross sections in the data file.
+		/// Returns by value for backward compatibility; prefer GetEyeOnCCSCalibrationOwned() for correct
+		/// polymorphic dispatch. In 2.0 both methods will be consolidated into a single unique_ptr-returning call.
 		/// </summary>
 		/// <returns>An object containing CCS calibration data. If the file is not initialized, it sets the error code ERR_FILE_NOT_INITIALIZED. If metadata is not loaded, it sets ERR_METADATA_NOT_LOADED.</returns>
 		MBISDK::EyeOnCcsCalibration GetEyeOnCCSCalibration();
+
+		/// <summary>
+		/// To obtain the EyeOn CCS calibration data with correct polymorphic type: returns
+		/// NonReducedEyeOnCcsCalibration when the stored gas mass is 0, EyeOnCcsCalibration otherwise.
+		/// Prefer this over GetEyeOnCCSCalibration() wherever unique_ptr ownership is acceptable.
+		/// In 2.0 both methods will be consolidated into this unique_ptr-returning call.
+		/// </summary>
+		/// <returns>Heap-allocated calibration of the correct concrete type. If the file is not initialized, it sets the error code ERR_FILE_NOT_INITIALIZED. If metadata is not loaded, it sets ERR_METADATA_NOT_LOADED.</returns>
+		std::unique_ptr<MBISDK::EyeOnCcsCalibration> GetEyeOnCCSCalibrationOwned();
 
 		/// <summary>
 		/// To obtain the CCS calibration data and polynomial coefficients used for CCS calculations and modeling.
@@ -476,6 +486,12 @@ extern "C"
 		/// <returns>List of int64_t values</returns>
 		std::shared_ptr<std::vector<std::pair<double, int64_t>>> GetRtTicList();
 
+		/// <summary>
+		/// Per-frame total ion current as a contiguous vector of int64_t,
+		/// indexed 0-based by internal frame index. Populated by loadRtTic.
+		/// </summary>
+		std::shared_ptr<std::vector<int64_t>> GetFrameTIC();
+
 #ifdef MBI_SDK_INTERNAL
 		/// <summary>
 		/// Set specific Total Ion Count (TIC) data from a specific frame
@@ -552,6 +568,20 @@ extern "C"
 		/// </summary>
 		/// <returns>recalculated rt tic value</returns>
 		int64_t RecalculateRTTicForFrame(std::shared_ptr<MBISDK::Frame> frame_ptr);
+
+		/// <summary>
+		/// Write slope/intercept and optional residual-fit terms as the ToF (mass) calibration
+		/// on every frame without loading scan data.
+		/// residualFit may be nullptr if there are no correction terms.
+		/// </summary>
+		void SetTofCalibrationAllFrames(double slope, double intercept,
+		                                const double* residualFit, size_t residualFitCount);
+
+		/// <summary>
+		/// Convenience overload; delegates to the pointer-based overload.
+		/// </summary>
+		void SetTofCalibrationAllFrames(double slope, double intercept,
+		                                const std::vector<double>& residualFit = std::vector<double>());
 #endif
 		/// <summary>
 		/// Retrieves single metadata item
@@ -650,6 +680,7 @@ extern "C"
 		// Frame-level internal implementation stuff
 
 		std::shared_ptr<std::vector<std::pair<double, int64_t>>> rt_tic_collection;
+		std::shared_ptr<std::vector<int64_t>> frame_tic;
 		std::shared_ptr<std::vector<int>> scanCounts;
 		std::shared_ptr<std::vector<double>> mzUpperBounds;
 		std::string oob_error_message;

@@ -3,7 +3,7 @@
  * MBI Data Access API                                             *
  * Copyright 2026 MOBILion Systems, Inc. ALL RIGHTS RESERVED       *
  * Author: DougBodden                                             *
- * release-1.12.5.10441
+ * release-1.13.1.11240
  * For full license terms, see the LICENSE.md file in the root of  *
  * this repository.                                                *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -241,6 +241,19 @@ extern "C"
 		/// <param name="padWithZeroes"> Whether or not to insert zeroes.</param>
 		/// <returns> An int32 CSRIMMSSpectrum containing the frame intensities and indices and an array of masses.</returns>
 		CSRIMMSSpectrum<int32_t> GetFrameIMMSSpectrumAsCSR(bool padWithZeroes);
+
+		/// <summary>
+		/// Retrieve the frame's data as a coordinate object array, with additional mass information.
+		/// </summary>
+		/// <returns> An int32 COOIMMSSpectrum containing the frame intensities and indices and an array of masses.</returns>
+		COOIMMSSpectrum<int32_t> GetFrameIMMSSpectrumAsCOO();
+
+		/// <summary>
+		/// Retrieve the frame's data as a coordinate object array, with additional mass information.
+		/// </summary>
+		/// <param name="padWithZeroes"> Whether or not to insert zeroes.</param>
+		/// <returns> An int32 COOIMMSSpectrum containing the frame intensities and indices and an array of masses.</returns>
+		COOIMMSSpectrum<int32_t> GetFrameIMMSSpectrumAsCOO(bool padWithZeroes);
 
 
 

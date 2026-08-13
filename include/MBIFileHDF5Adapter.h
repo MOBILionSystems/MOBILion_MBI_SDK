@@ -5,7 +5,7 @@
 // Curt Lindmark 9/1/2021
 // For full license terms, see the LICENSE.md file in the root of this repository.
 
-// release-1.12.5.10441
+// release-1.13.1.11240
 #pragma once
 #ifndef MBI_DLLCPP
 #ifdef LINUX

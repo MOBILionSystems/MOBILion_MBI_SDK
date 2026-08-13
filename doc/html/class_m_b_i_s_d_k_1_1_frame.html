@@ -159,6 +159,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4bc7d9421101f3e44b4ad6c0ef37aade" id="r_a4bc7d9421101f3e44b4ad6c0ef37aade"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_m_b_i_s_d_k_1_1_c_s_r_i_m_m_s_spectrum.html">CSRIMMSSpectrum</a>&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">int32_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_m_b_i_s_d_k_1_1_frame.html#a4bc7d9421101f3e44b4ad6c0ef37aade">GetFrameIMMSSpectrumAsCSR</a> (<a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">bool</a> <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">padWithZeroes</a>)</td></tr>
 <tr class="memdesc:a4bc7d9421101f3e44b4ad6c0ef37aade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the frame's data as a compressed sparse row array, with additional mass information.  <br /></td></tr>
 <tr class="separator:a4bc7d9421101f3e44b4ad6c0ef37aade"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc5028a0e91bf234a67413eb202c6fea" id="r_abc5028a0e91bf234a67413eb202c6fea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_m_b_i_s_d_k_1_1_c_o_o_i_m_m_s_spectrum.html">COOIMMSSpectrum</a>&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">int32_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_m_b_i_s_d_k_1_1_frame.html#abc5028a0e91bf234a67413eb202c6fea">GetFrameIMMSSpectrumAsCOO</a> ()</td></tr>
+<tr class="memdesc:abc5028a0e91bf234a67413eb202c6fea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the frame's data as a coordinate object array, with additional mass information.  <br /></td></tr>
+<tr class="separator:abc5028a0e91bf234a67413eb202c6fea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6ebfa5edf427553de366bfe22f1dffe" id="r_ac6ebfa5edf427553de366bfe22f1dffe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_m_b_i_s_d_k_1_1_c_o_o_i_m_m_s_spectrum.html">COOIMMSSpectrum</a>&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">int32_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_m_b_i_s_d_k_1_1_frame.html#ac6ebfa5edf427553de366bfe22f1dffe">GetFrameIMMSSpectrumAsCOO</a> (<a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">bool</a> <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">padWithZeroes</a>)</td></tr>
+<tr class="memdesc:ac6ebfa5edf427553de366bfe22f1dffe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the frame's data as a coordinate object array, with additional mass information.  <br /></td></tr>
+<tr class="separator:ac6ebfa5edf427553de366bfe22f1dffe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01c38a37efcc575f012d0a5a1ce80c87" id="r_a01c38a37efcc575f012d0a5a1ce80c87"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_m_b_i_s_d_k_1_1_frame.html#a01c38a37efcc575f012d0a5a1ce80c87">GetFrameDataAsCSRComponents</a> (std::vector&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">int32_t</a> &gt; *data, std::vector&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">size_t</a> &gt; *indices, std::vector&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">size_t</a> &gt; *indptr)</td></tr>
 <tr class="memdesc:a01c38a37efcc575f012d0a5a1ce80c87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the frame data into pointers to vectors as the data, indices, indptr arrays of a CSR array.  <br /></td></tr>
 <tr class="separator:a01c38a37efcc575f012d0a5a1ce80c87"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -879,6 +885,53 @@ Static Public Attributes</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true on success, false on failure</dd></dl>
+
+</div>
+</div>
+<a id="abc5028a0e91bf234a67413eb202c6fea" name="abc5028a0e91bf234a67413eb202c6fea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc5028a0e91bf234a67413eb202c6fea">&#9670;&#160;</a></span>GetFrameIMMSSpectrumAsCOO() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_m_b_i_s_d_k_1_1_c_o_o_i_m_m_s_spectrum.html">COOIMMSSpectrum</a>&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">int32_t</a> &gt; MBISDK::Frame::GetFrameIMMSSpectrumAsCOO </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieve the frame's data as a coordinate object array, with additional mass information. </p>
+<dl class="section return"><dt>Returns</dt><dd>An int32 <a class="el" href="struct_m_b_i_s_d_k_1_1_c_o_o_i_m_m_s_spectrum.html">COOIMMSSpectrum</a> containing the frame intensities and indices and an array of masses.</dd></dl>
+
+</div>
+</div>
+<a id="ac6ebfa5edf427553de366bfe22f1dffe" name="ac6ebfa5edf427553de366bfe22f1dffe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6ebfa5edf427553de366bfe22f1dffe">&#9670;&#160;</a></span>GetFrameIMMSSpectrumAsCOO() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_m_b_i_s_d_k_1_1_c_o_o_i_m_m_s_spectrum.html">COOIMMSSpectrum</a>&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">int32_t</a> &gt; MBISDK::Frame::GetFrameIMMSSpectrumAsCOO </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">bool</a>&#160;</td>
+          <td class="paramname"><em>padWithZeroes</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieve the frame's data as a coordinate object array, with additional mass information. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">padWithZeroes</td><td>Whether or not to insert zeroes.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An int32 <a class="el" href="struct_m_b_i_s_d_k_1_1_c_o_o_i_m_m_s_spectrum.html">COOIMMSSpectrum</a> containing the frame intensities and indices and an array of masses.</dd></dl>
 
 </div>
 </div>

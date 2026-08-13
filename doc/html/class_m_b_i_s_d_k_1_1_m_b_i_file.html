@@ -120,15 +120,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a076991387eb8e6083199c9c7f77cbcb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">To associate or update the global metadata for the <a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html" title="Top level object for interfacing to the MBI data API.">MBIFile</a>, ensuring that necessary file-wide metadata is accessible for further operations.  <br /></td></tr>
 <tr class="separator:a076991387eb8e6083199c9c7f77cbcb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0cdac12a140820aa08bd410bf2ebb397" id="r_a0cdac12a140820aa08bd410bf2ebb397"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_m_b_i_s_d_k_1_1_tof_calibration.html">MBISDK::TofCalibration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html#a0cdac12a140820aa08bd410bf2ebb397">GetCalibration</a> ()</td></tr>
-<tr class="memdesc:a0cdac12a140820aa08bd410bf2ebb397"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html" title="Top level object for interfacing to the MBI data API.">MBIFile</a>'s mass calibration. This method will be removed in a future version of MBI SDK.  <br /></td></tr>
+<tr class="memdesc:a0cdac12a140820aa08bd410bf2ebb397"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html" title="Top level object for interfacing to the MBI data API.">MBIFile</a>'s mass calibration.  <br /></td></tr>
 <tr class="separator:a0cdac12a140820aa08bd410bf2ebb397"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9345b785ebd57b88cbfb877e4c48fb4c" id="r_a9345b785ebd57b88cbfb877e4c48fb4c"><td class="memItemLeft" align="right" valign="top"><a id="a9345b785ebd57b88cbfb877e4c48fb4c" name="a9345b785ebd57b88cbfb877e4c48fb4c"></a>
 <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><b>HasCCSCalibration</b> ()</td></tr>
 <tr class="memdesc:a9345b785ebd57b88cbfb877e4c48fb4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">To determine whether or not a file has CCS coefficients written to it. <br /></td></tr>
 <tr class="separator:a9345b785ebd57b88cbfb877e4c48fb4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab85872e50c483e6d150813a748834e8f" id="r_ab85872e50c483e6d150813a748834e8f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_m_b_i_s_d_k_1_1_eye_on_ccs_calibration.html">MBISDK::EyeOnCcsCalibration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html#ab85872e50c483e6d150813a748834e8f">GetEyeOnCCSCalibration</a> ()</td></tr>
-<tr class="memdesc:ab85872e50c483e6d150813a748834e8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">To obtain the EyeOn CCS calibration data, which is used for analyzing collision cross sections in the data file.  <br /></td></tr>
+<tr class="memdesc:ab85872e50c483e6d150813a748834e8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">To obtain the EyeOn CCS calibration data, which is used for analyzing collision cross sections in the data file. Returns by value for backward compatibility; prefer <a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html#a0add8deee0e695ada39a3bf9a886432d" title="To obtain the EyeOn CCS calibration data with correct polymorphic type: returns NonReducedEyeOnCcsCal...">GetEyeOnCCSCalibrationOwned()</a> for correct polymorphic dispatch. In 2.0 both methods will be consolidated into a single unique_ptr-returning call.  <br /></td></tr>
 <tr class="separator:ab85872e50c483e6d150813a748834e8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0add8deee0e695ada39a3bf9a886432d" id="r_a0add8deee0e695ada39a3bf9a886432d"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_eye_on_ccs_calibration.html">MBISDK::EyeOnCcsCalibration</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html#a0add8deee0e695ada39a3bf9a886432d">GetEyeOnCCSCalibrationOwned</a> ()</td></tr>
+<tr class="memdesc:a0add8deee0e695ada39a3bf9a886432d"><td class="mdescLeft">&#160;</td><td class="mdescRight">To obtain the EyeOn CCS calibration data with correct polymorphic type: returns <a class="el" href="class_m_b_i_s_d_k_1_1_non_reduced_eye_on_ccs_calibration.html" title="An EyeOnCcsCalibration that applies only charge scaling, with no reduced-mass adjustment....">NonReducedEyeOnCcsCalibration</a> when the stored gas mass is 0, <a class="el" href="class_m_b_i_s_d_k_1_1_eye_on_ccs_calibration.html" title="A calibration file that holds coefficients to convert from AT to CCS.">EyeOnCcsCalibration</a> otherwise. Prefer this over <a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html#ab85872e50c483e6d150813a748834e8f" title="To obtain the EyeOn CCS calibration data, which is used for analyzing collision cross sections in the...">GetEyeOnCCSCalibration()</a> wherever unique_ptr ownership is acceptable. In 2.0 both methods will be consolidated into this unique_ptr-returning call.  <br /></td></tr>
+<tr class="separator:a0add8deee0e695ada39a3bf9a886432d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a378b124e4203b3c91399fc2bf5995537" id="r_a378b124e4203b3c91399fc2bf5995537"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html#a378b124e4203b3c91399fc2bf5995537">GetCCSCalibration</a> (std::vector&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">double</a> &gt; *coefficients)</td></tr>
 <tr class="memdesc:a378b124e4203b3c91399fc2bf5995537"><td class="mdescLeft">&#160;</td><td class="mdescRight">To obtain the CCS calibration data and polynomial coefficients used for CCS calculations and modeling.  <br /></td></tr>
 <tr class="separator:a378b124e4203b3c91399fc2bf5995537"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -265,6 +268,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetAcquisition
 <tr class="memitem:a5d7c43e1b1f6de909895595f66dcaf6c" id="r_a5d7c43e1b1f6de909895595f66dcaf6c"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; std::vector&lt; std::pair&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">double</a>, <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">int64_t</a> &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html#a5d7c43e1b1f6de909895595f66dcaf6c">GetRtTicList</a> ()</td></tr>
 <tr class="memdesc:a5d7c43e1b1f6de909895595f66dcaf6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of RT Tic values.  <br /></td></tr>
 <tr class="separator:a5d7c43e1b1f6de909895595f66dcaf6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a834cbb6b26e8ea05d5d3855fe3c715e3" id="r_a834cbb6b26e8ea05d5d3855fe3c715e3"><td class="memItemLeft" align="right" valign="top"><a id="a834cbb6b26e8ea05d5d3855fe3c715e3" name="a834cbb6b26e8ea05d5d3855fe3c715e3"></a>
+std::shared_ptr&lt; std::vector&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">int64_t</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetFrameTIC</b> ()</td></tr>
+<tr class="memdesc:a834cbb6b26e8ea05d5d3855fe3c715e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Per-frame total ion current as a contiguous vector of int64_t, indexed 0-based by internal frame index. Populated by loadRtTic. <br /></td></tr>
+<tr class="separator:a834cbb6b26e8ea05d5d3855fe3c715e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6adef3b743d35d5964f70302905935ff" id="r_a6adef3b743d35d5964f70302905935ff"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html#a6adef3b743d35d5964f70302905935ff">getMetaDataItem</a> (std::string <a class="el" href="class_m_b_i_s_d_k_1_1_piecewise_function.html">key</a>)</td></tr>
 <tr class="memdesc:a6adef3b743d35d5964f70302905935ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves single metadata item.  <br /></td></tr>
 <tr class="separator:a6adef3b743d35d5964f70302905935ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -525,7 +532,7 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>The <a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html" title="Top level object for interfacing to the MBI data API.">MBIFile</a>'s mass calibration. This method will be removed in a future version of MBI SDK. </p>
+<p>The <a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html" title="Top level object for interfacing to the MBI data API.">MBIFile</a>'s mass calibration. </p>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
@@ -646,8 +653,28 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>To obtain the EyeOn CCS calibration data, which is used for analyzing collision cross sections in the data file. </p>
+<p>To obtain the EyeOn CCS calibration data, which is used for analyzing collision cross sections in the data file. Returns by value for backward compatibility; prefer <a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html#a0add8deee0e695ada39a3bf9a886432d" title="To obtain the EyeOn CCS calibration data with correct polymorphic type: returns NonReducedEyeOnCcsCal...">GetEyeOnCCSCalibrationOwned()</a> for correct polymorphic dispatch. In 2.0 both methods will be consolidated into a single unique_ptr-returning call. </p>
 <dl class="section return"><dt>Returns</dt><dd>An object containing CCS calibration data. If the file is not initialized, it sets the error code ERR_FILE_NOT_INITIALIZED. If metadata is not loaded, it sets ERR_METADATA_NOT_LOADED.</dd></dl>
+
+</div>
+</div>
+<a id="a0add8deee0e695ada39a3bf9a886432d" name="a0add8deee0e695ada39a3bf9a886432d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0add8deee0e695ada39a3bf9a886432d">&#9670;&#160;</a></span>GetEyeOnCCSCalibrationOwned()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="class_m_b_i_s_d_k_1_1_eye_on_ccs_calibration.html">MBISDK::EyeOnCcsCalibration</a> &gt; MBISDK::MBIFile::GetEyeOnCCSCalibrationOwned </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>To obtain the EyeOn CCS calibration data with correct polymorphic type: returns <a class="el" href="class_m_b_i_s_d_k_1_1_non_reduced_eye_on_ccs_calibration.html" title="An EyeOnCcsCalibration that applies only charge scaling, with no reduced-mass adjustment....">NonReducedEyeOnCcsCalibration</a> when the stored gas mass is 0, <a class="el" href="class_m_b_i_s_d_k_1_1_eye_on_ccs_calibration.html" title="A calibration file that holds coefficients to convert from AT to CCS.">EyeOnCcsCalibration</a> otherwise. Prefer this over <a class="el" href="class_m_b_i_s_d_k_1_1_m_b_i_file.html#ab85872e50c483e6d150813a748834e8f" title="To obtain the EyeOn CCS calibration data, which is used for analyzing collision cross sections in the...">GetEyeOnCCSCalibration()</a> wherever unique_ptr ownership is acceptable. In 2.0 both methods will be consolidated into this unique_ptr-returning call. </p>
+<dl class="section return"><dt>Returns</dt><dd>Heap-allocated calibration of the correct concrete type. If the file is not initialized, it sets the error code ERR_FILE_NOT_INITIALIZED. If metadata is not loaded, it sets ERR_METADATA_NOT_LOADED.</dd></dl>
 
 </div>
 </div>

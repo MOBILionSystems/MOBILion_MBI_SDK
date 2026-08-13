@@ -1,0 +1,175 @@
+MBI SDK 1.13.0 — Release Notes Summary
+======================================
+
+EyeOnCcsCalibration: decoupled from parent MBIFile lifetime
+-----------------------------------------------------------
+
+An EyeOnCcsCalibration instance returned from MBIFile::GetEyeOnCCSCalibration()
+can now outlive its parent MBIFile, including being used after the parent file
+has been Close()d. All calibration math (CCS-from-arrival-time and the inverse,
+adjustment for reduced mass, range queries, coefficient and version retrieval)
+is satisfied entirely from state captured at construction time.
+
+What changed
+------------
+
+1. EyeOnCcsCalibration no longer dereferences its parent MBIFile* outside of
+   construction or the deprecated frame-index ArrivalTimeToCCS overload.
+
+   - New private member `filename_at_construction` captures the parent file's
+     name when the calibration is constructed. GetErrorOutput() now returns
+     that captured filename instead of re-reading from the parent file. If
+     the calibration was constructed without a valid file, GetErrorOutput()
+     returns "File Not Found." as before.
+
+   - The ~fifteen calls to `mbi_file_ptr->setExternalErrorMessage(...)` that
+     mirrored thrown errors back to the parent file have been removed. Errors
+     still propagate via the std::runtime_error that is thrown. Callers that
+     previously relied on reading file->getErrorMessage() after catching a
+     CCS exception must read the exception's what() instead.
+
+   - ComputeGasMass() (no-argument overload) now returns the gas-mass
+     attribute already held on the calibration instance rather than re-reading
+     the GAS_MASS global metadata item from the parent file. The value is
+     populated at construction (from the cal-ccs JSON, or via the 3-argument
+     constructor's gas_mass_override for very old files) and may be overridden
+     later via SetGasMass(). This eliminates a hidden file-access on every
+     call and behaves identically when the parent file is open.
+
+2. ArrivalTimeToCCS(int frame_index) is marked [[deprecated]].
+
+   This overload requires reading frame data through the parent MBIFile, so it
+   cannot be made file-independent. It is retained for 1.x compatibility but
+   should move to a method on the Frame object (or to a free function that
+   takes a Frame and a calibration) in version 2.0. The guard clause at the
+   top of the implementation now rejects both a null parent pointer and a
+   parent file that has been closed (IsInitialized() == false), so the method
+   raises cleanly rather than dereferencing freed state.
+
+   The MBISDK.NET wrapper does not expose this overload.
+
+3. MBIFile::Close() now sets is_initialized = false.
+
+   Previously IsInitialized() continued to return true after Close(), which
+   defeated any guard built on it. With this fix, code that calls
+   IsInitialized() after Close() now sees the correct state.
+
+New / changed public API
+------------------------
+
+- MBISDK::EyeOnCcsCalibration::ArrivalTimeToCCS(int frame_index)
+  Marked [[deprecated]] with a migration note pointing to a planned
+  Frame-based replacement in 2.0.
+
+- MBISDK::EyeOnCcsCalibration::ComputeGasMass()
+  Behavior change (described above) — now returns the cached attribute.
+
+- MBISDK::EyeOnCcsCalibration::GetErrorOutput()
+  Now returns the filename that was captured at construction; still returns
+  "File Not Found." when no filename was available at that time.
+
+- MBISDK::MBIFile::Close()
+  Now resets the internal initialization flag.
+
+MBISDK.NET (new in 1.13.0)
+--------------------------
+
+- New managed wrapper class MBISDK_DOTNET::CCSCalibration in
+  MBICCSCalibration.h / MBICCSCalibration.cpp, wrapping the native
+  EyeOnCcsCalibration. Wraps all of the public API except ParseCCSCal,
+  SetCCSCoefficients, GenerateThrownErrorMessage, IsValid, ComputeGasMass,
+  ChooseGoodRoot, and the deprecated frame-index ArrivalTimeToCCS overload.
+
+- New method MBISDK_DOTNET::MBIFile::GetCCSCalibration() returns a managed
+  CCSCalibration that is independent of the wrapped file's lifetime.
+
+Migration notes
+---------------
+
+- Callers that previously relied on a CCS exception leaving an error message
+  on the parent MBIFile (via getErrorMessage()) must switch to reading
+  std::exception::what() on the thrown exception.
+
+- Callers that used ArrivalTimeToCCS(int frame_index) will see a deprecation
+  warning at the call site. The recommended migration is to iterate the frame's
+  scans (via MBIFile::GetFrame and the Frame API) and call the scalar
+  ArrivalTimeToCCS(arrival_time, ion_mass) overload per scan, or to wait for
+  the v2.0 Frame-based replacement.
+
+
+DCU-1128: Charge-aware CCS, nonreduced calibration variant, gas mass exposure
+==============================================================================
+
+Breaking behavior change — GetCCSCoefficients()
+------------------------------------------------
+
+The return order is now lowest-order first (constant term at index 0,
+highest-degree term at index n). Previously the vector was highest-order
+first. Callers that index directly into the result or write it verbatim to
+another container must reverse the traversal order. SetCCSCoefficients was
+already documented to accept lowest-first input; its behavior is unchanged.
+
+New throws on existing methods
+------------------------------
+
+- ArrivalTimeToCCS(double scan_arrival_time, double ion_mass, int Z)
+  (new Z-aware overload) — throws std::invalid_argument if Z <= 0.
+
+- CCSToArrivalTime(double, double, int Z) and
+  CCSToArrivalTime(double, double, int Z, bool)
+  (new Z-aware overloads) — throw std::invalid_argument if Z <= 0.
+
+- ArrivalTimeToCCS(int frame_index) (existing deprecated overload) — now
+  throws std::runtime_error with a CCS_MISSING_TOF_CALIBRATION message if the
+  calibration was constructed via the de-novo constructor (i.e. without a
+  parent MBI file and therefore without a TofCalibration). Previously this
+  would have dereferenced a null pointer.
+
+New throws on new method
+------------------------
+
+- ReductionFactor(double M_ion, int Z) (new) — throws std::invalid_argument
+  if Z <= 0 or M_ion <= 0; throws std::runtime_error if the reduction factor
+  denominator is zero (M_ion + mass_gas_medium == 0) or if the factor
+  evaluates to exactly zero.
+
+Behavior change on GetEyeOnCCSCalibration()
+--------------------------------------------
+
+The method now internally delegates to the new GetEyeOnCCSCalibrationOwned().
+When a file has gas mass 0 stored in cal-ccs, the internal object is a
+NonReducedEyeOnCcsCalibration; the returned value is then sliced back to
+EyeOnCcsCalibration for backward compatibility. The computed CCS values for
+gas-mass-0 files therefore change: the reduced-mass denominator no longer
+divides by zero; instead, ReductionFactor returns 1/Z. Callers that need the
+correct runtime type should use GetEyeOnCCSCalibrationOwned() instead.
+
+New additions (no existing behavior changed)
+--------------------------------------------
+
+- GetEyeOnCCSCalibrationOwned() — returns
+  std::unique_ptr<EyeOnCcsCalibration> with the correct runtime type
+  (NonReducedEyeOnCcsCalibration when gas mass is 0). Preferred over
+  GetEyeOnCCSCalibration() for any code that performs virtual dispatch on the
+  result. Both methods will consolidate to a single unique_ptr-returning call
+  in version 2.0.
+
+- NonReducedEyeOnCcsCalibration class — derives from EyeOnCcsCalibration;
+  overrides ReductionFactor to return 1/Z (charge scaling only, no
+  reduced-mass adjustment). All other methods are inherited unchanged.
+
+- GetGasMass() — returns the stored drift-gas mass in Daltons.
+
+- ReductionFactor(double M_ion, int Z) — public virtual method; computes
+  (1/Z) * sqrt(m_gas * M_ion / (M_ion + m_gas)). Override point for
+  NonReducedEyeOnCcsCalibration.
+
+- De-novo EyeOnCcsCalibration constructor accepting coefficients
+  (lowest-order first), ccs_minimum, ccs_maximum, at_surfing, mass_gas_medium,
+  and an optional shared_ptr<TofCalibration>. Allows calibration objects to be
+  built from fit results without an open parent MBI file.
+
+- MBISDK.NET: CCSCalibration and NonReducedCCSCalibration now expose all of
+  the above. The CCSCalibration de-novo constructor (coefficients, ccs_minimum,
+  ccs_maximum, at_surfing, gas_mass) is available in managed code. Coefficient
+  arrays follow the same lowest-order-first convention.

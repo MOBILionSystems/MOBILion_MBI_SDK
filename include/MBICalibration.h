@@ -2,8 +2,9 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * MBI Data Access API                                             *
  * Copyright 2026 MOBILion Systems, Inc. ALL RIGHTS RESERVED       *
+ * Author: Bennett Kalafut                                         *
  * Author: Greg Van Aken                                           *
- * release-1.12.5.10441
+ * release-1.13.1.11240
  * For full license terms, see the LICENSE.md file in the root of  *
  * this repository.                                                *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -25,6 +26,7 @@
 #endif
 #endif
 
+#include <memory>
 #include <vector>
 #include <string>
 #include <map>
@@ -297,6 +299,28 @@ extern "C"
 		/// @brief Initialize a calibration object from json representation.
 		EyeOnCcsCalibration(std::string strCCSData, MBISDK::MBIFile* input_mbi_file_ptr);
 
+		/// @brief Initialize a calibration object from json representation, with a gas mass override applied after construction.
+		EyeOnCcsCalibration(std::string strCCSData, MBISDK::MBIFile* input_mbi_file_ptr, double gas_mass_override);
+
+		/// @brief Initialize a calibration object de novo from fit results, without a parent MBI file.
+		/// @param ccs_coefficients Polynomial coefficients in lowest-first order (constant term first).
+		/// @param ccs_minimum Lower bound of the calibrated CCS range.
+		/// @param ccs_maximum Upper bound of the calibrated CCS range.
+		/// @param at_surfing Earliest valid arrival time for the calibration, in milliseconds.
+		/// @param mass_gas_medium Mass of the drift gas, in Daltons.
+		/// @param tof_calibration Shared TofCalibration used by the deprecated frame-index ArrivalTimeToCCS overload.
+		EyeOnCcsCalibration(
+			std::vector<double> ccs_coefficients,
+			double ccs_minimum,
+			double ccs_maximum,
+			double at_surfing,
+			double mass_gas_medium,
+			std::shared_ptr<MBISDK::TofCalibration> tof_calibration);
+
+		/// @brief Virtual destructor so derived variants (e.g. NonReducedEyeOnCcsCalibration)
+		/// can be owned and deleted through an EyeOnCcsCalibration* (as the .NET wrapper does).
+		virtual ~EyeOnCcsCalibration() = default;
+
 		/// @brief list of throwable errors
 		enum {
 			/// @brief bad file pointer throwable error
@@ -313,40 +337,64 @@ extern "C"
 		void ParseCCSCal(std::string strCCSData);
 
 		/// @brief Get CCS Minimum value
-		double GetCCSMinimum();
+		double GetCCSMinimum() const;
 
 		/// @brief Get CCS Maximum value
-		double GetCCSMaximum();
+		double GetCCSMaximum() const;
 
 		/// @brief Get Degree value
-		int GetDegree();
+		int GetDegree() const;
 
 		/// @brief Get AT Surfing value, measured in milliseconds
-		double GetAtSurf();
+		double GetAtSurf() const;
 
-		/// @brief Get CCS Coefficient for a given nIndex
-		std::vector<double> GetCCSCoefficients();
+		/// @brief Get CCS coefficients, lowest-order first (constant term at index 0).
+		std::vector<double> GetCCSCoefficients() const;
 
-		/// @brief Get CCS Coefficient for a given nIndex
+		/// @brief Set CCS coefficients; expects lowest-order first (constant term at index 0).
 		void SetCCSCoefficients(const std::vector<double> vec_input);
 
-		/// @brief Calculate CCS value for given AT and CCS calibration
+		/// @brief Calculate CCS value for given AT and CCS calibration, assuming Z=1.
 		double ArrivalTimeToCCS(double scan_arrival_time, double ion_mass);
+
+		/// @brief Calculate CCS value for given AT and CCS calibration at a specified charge state.
+		/// @param scan_arrival_time Arrival time within a scan, in milliseconds.
+		/// @param ion_mass Ion m/z.
+		/// @param Z Ion charge state.
+		double ArrivalTimeToCCS(double scan_arrival_time, double ion_mass, int Z);
 
 		/// @brief Calculate CCS value for set of AT
 		std::vector<std::tuple<int64_t, double, double>> ArrivalTimeToCCS(std::vector<std::tuple<int64_t, double, double>> input_arrival_list);
 
-		/// @brief Calculate CCS value for the AT of a single frame of intensities
+		/// @brief Calculate CCS value for the AT of a single frame of intensities.
+		/// @deprecated This overload introduces a hard dependency on the parent MBIFile remaining open
+		/// for the lifetime of the calibration. In version 2.0 this responsibility should move to a
+		/// method on the Frame object (or a free function that takes a Frame and a calibration), so
+		/// the calibration itself can be persisted independent of any open file.
+		[[deprecated("Hard-couples the calibration to an open parent file; will move to Frame in v2.0.")]]
 		std::vector<std::tuple<int64_t, double, double>> ArrivalTimeToCCS(int frame_index);
 
         /// @brief Get the CCS corresponding to the low and high ends of the calibrated range.
 		std::pair<double,double> GetCalibratedRange();
 
-		/// @brief Calculate Arrival Time for given CCS
+		/// @brief Calculate Arrival Time for given CCS, assuming Z=1.
 		double CCSToArrivalTime(double ccs_angstroms_squared, double ion_mass);
 
-        /// @brief Calculate Arrival Time for given CCS, with bounds check potentially disabled
+        /// @brief Calculate Arrival Time for given CCS, with bounds check potentially disabled, assuming Z=1.
 		double CCSToArrivalTime(double ccs_angstroms_squared, double ion_mass, bool doBoundsCheck);
+
+		/// @brief Calculate Arrival Time for given CCS at a specified charge state.
+		/// @param ccs_angstroms_squared Target CCS in angstroms squared.
+		/// @param ion_mass Ion m/z.
+		/// @param Z Ion charge state.
+		double CCSToArrivalTime(double ccs_angstroms_squared, double ion_mass, int Z);
+
+		/// @brief Calculate Arrival Time for given CCS at a specified charge state, with bounds check potentially disabled.
+		/// @param ccs_angstroms_squared Target CCS in angstroms squared.
+		/// @param ion_mass Ion m/z.
+		/// @param Z Ion charge state.
+		/// @param doBoundsCheck If true, throw when ccs is outside the calibrated range.
+		double CCSToArrivalTime(double ccs_angstroms_squared, double ion_mass, int Z, bool doBoundsCheck);
 
 		///  @brief Return the details during an error to assist developers
 		std::string GetErrorOutput();
@@ -354,11 +402,20 @@ extern "C"
 		///  @brief Return the value of the gas mass for the experiment
 		double ComputeGasMass(std::string gas_string);
 
-		///  @brief Calculate reduced CCS value based on CCS value
-		double AdjustCCSValue(double unadjusted_ccs, double dbArrivalTime, double Mz_ion);
+		///  @brief Calculate CCS value based on rCCS value
+		double UnReduceCCSValue(double unadjusted_ccs, double M_ion, int Z);
 
-		///  @brief Calculate CCS value based on reduced CCS value
-		double InvertAdjustCCSValue(double ccs_value, double Mz_ion);
+		///  @brief Calculate rCCS value based on CCS value
+		double ReduceCCSValue(double ccs_value, double M_ion, int Z);
+
+		///  @brief Compute the CCS reduction factor (1/Z) * sqrt(m_gas * m_ion / (m_ion + m_gas))
+		///  used to convert between CCS and reduced CCS. Throws if Z, M_ion, or the resulting
+		///  factor would be non-positive.
+		///  @param M_ion Ion m/z.
+		///  @param Z Ion charge state (must be strictly positive).
+		///  @note Virtual so NonReducedEyeOnCcsCalibration can override it to 1.0; the base
+		///  AT<->CCS methods dispatch through this, so overriding it suffices to disable reduction.
+		virtual double ReductionFactor(double M_ion, int Z);
 
 		///  @brief Return the value of the gas mass for the experiment
 		double ComputeGasMass();
@@ -371,6 +428,12 @@ extern "C"
 
 		///  @brief override the gas mass value
 		void SetGasMass(double gas_mass_input);
+
+		///  @brief return the value of the gas mass for the experiment
+		double GetGasMass() const;
+
+		///  @brief return the shared TofCalibration associated with this CCS calibration
+		std::shared_ptr<MBISDK::TofCalibration> GetTofCalibration() const;
 
 		///  @brief decide which of two roots is better
 		double ChooseGoodRoot(double root_1, double root_2, double ion_mass);
@@ -402,8 +465,12 @@ extern "C"
 		static constexpr const char* CCS_BAD_FRAME_INDEX_FOOTER = ", must be at least 1 and no greater than the number of frames in this file: ";
 		///  @brief CCS_BAD_FILE_POINTER error text
 		static constexpr const char* CCS_BAD_FILE_POINTER = "The file pointer supplied is not valid for this file: ";
+		///  @brief CCS_MISSING_TOF_CALIBRATION error text
+		static constexpr const char* CCS_MISSING_TOF_CALIBRATION = "The TofCalibration is not available; this overload requires a calibration constructed from an MBI file: ";
 		///  @brief CCS_MISSING_CCS_GAS_TYPE error text
 		static constexpr const char* CCS_MISSING_CCS_GAS_TYPE = "The mass flow gas type entry for CCS Calibration data is not present in this file: ";
+		///  @brief CCS_BAD_GAS_MASS error text
+		static constexpr const char* CCS_BAD_GAS_MASS = "The gas mass entry for CCS Calibration data could not be parsed as a number in this file: ";
 		///  @brief CCS_ARRIVAL_TIME_HEADER error text
 		static constexpr const char* CCS_ARRIVAL_TIME_HEADER = "The arrival time chosen, ";
 		///  @brief CCS_BAD_MASS_VALUE_PART_2 error text
@@ -419,9 +486,27 @@ extern "C"
 		double at_surfing;  // earliest valid AT value for a given calibration, in milliseconds
 		double mass_gas_medium; //mass of gas for a specific calibration
 		std::vector<double> ccs_coefficients; // list of coefficients, as read in from MBI file with first coefficient applying to addend with the highest order (usually AX^3)
-		MBISDK::MBIFile* mbi_file_ptr;
-		MBISDK::TofCalibration tof_cal;
+		MBISDK::MBIFile* mbi_file_ptr; // Retained only to support the deprecated frame-index ArrivalTimeToCCS overload; all other methods are file-independent post-construction.
+		std::string filename_at_construction; // Captured at construction so GetErrorOutput() works after the parent file is closed.
+		std::shared_ptr<MBISDK::TofCalibration> tof_cal; // Retained as a shared_ptr so de novo calibrations can be constructed without copying a TofCalibration value.
 		std::vector<int> version; // [major, minor, patch]
+	};
+
+	/// @class MBISDK::NonReducedEyeOnCcsCalibration
+	/// @brief An EyeOnCcsCalibration that applies only charge scaling, with no reduced-mass
+	/// adjustment. The reduction factor is 1/Z, so ArrivalTimeToCCS yields the raw polynomial
+	/// scaled by charge (poly * Z) and CCSToArrivalTime inverts it. This makes a "nonreduced"
+	/// calibration (e.g. a gas mass of 0) usable without the divide-by-zero that the reduced-mass
+	/// reduction factor would hit.
+	class MBI_DLLCPP NonReducedEyeOnCcsCalibration : public EyeOnCcsCalibration
+	{
+	public:
+		// Reuse every EyeOnCcsCalibration constructor (file, json, de novo, etc.).
+		using EyeOnCcsCalibration::EyeOnCcsCalibration;
+
+		/// @brief 1/Z: a nonreduced calibration applies charge scaling but no reduced-mass
+		/// adjustment, so it does not depend on M_ion or the gas mass.
+		double ReductionFactor(double M_ion, int Z) override;
 	};
 }
 }
