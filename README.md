@@ -30,13 +30,13 @@ The SDK exposes IM-MS profile data, metadata, and CCS calibrations.
 
 | Header | Contents |
 | --- | --- |
-| `MBIFile.h` | `MBIFile` — top-level file object. Include this; it pulls in the rest. |
-| `MBIFrame.h` | `Frame`, `MassSpectrum` — frame data access |
+| `MBIFile.h` | `MBIFile` : top-level file object. |
+| `MBIFrame.h` | `Frame`, `MassSpectrum`: frame data access |
 | `MBISparse.h` | `COOArray<T>`, `CSRArray<T>`, `CSRIMMSSpectrum<T>`, `COOIMMSSpectrum<T>` sparse containers |
-| `MBICalibration.h` | `TofCalibration`, `EyeOnCcsCalibration`, and related calibration classes |
+| `MBICalibration.h` | `TofCalibration`, `EyeOnCcsCalibration`, and related classes |
 | `MBIConstants.h` | Metadata key names (`MBIAttr::GlobalKey`, etc.) and enums |
 | `MBIMetadata.h` | `Metadata`, `GlobalMetadata`, `FrameMetadata` |
-| `MBIScanDefinition.h` | `ScanDefinition` — CE ramps and isolation windows. Groundwork for future DIA support; not required for current data. |
+| `MBIScanDefinition.h` | `ScanDefinition` : CE ramps and isolation windows. Groundwork for future DIA support; not required for current data. |
 | `MBIFileHDF5Adapter.h` | Low-level HDF5 adapter (not normally called directly) |
 
 Full API documentation is in `doc/html/index.html`.
@@ -76,7 +76,7 @@ Command line equivalent:
 cl /std:c++14 /EHsc /I include myprogram.cpp /link /LIBPATH:lib\win-x64 MBI_SDK.lib
 ```
 
-Do **not** define `MBI_EXPORTS` — that macro is for building the SDK itself. Client code picks up
+Do **not** define `MBI_EXPORTS` : that macro is for building the SDK itself. Client code picks up
 `__declspec(dllimport)` automatically.
 
 ---
