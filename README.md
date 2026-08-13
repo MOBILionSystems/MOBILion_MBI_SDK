@@ -22,6 +22,8 @@ internally, so no separate HDF5 dependency is required.
 | `lib/win-x64/MBI_SDK.lib` | Import library for linking |
 | `lib/win-x64/swig-python/` | SWIG-generated Python bindings (`mbisdk.py`, `_mbisdk.pyd`) |
 | `lib/linux-x64/` | Linux x86-64 packages (`.deb` and `.rpm`) |
+| `lib/linux-x64/swig-python/` | Python bindings for Linux, as a wheel |
+| `examples/MBISDK_demo/` | Worked Visual Studio example project |
 | `doc/html/index.html` | Full Doxygen API reference |
 | `LICENSE.md` | MOBILion Software Use Agreement |
 | `COPYING.txt` | HDF5 license (third-party component) |
@@ -133,8 +135,8 @@ g++ -std=c++17 -DLINUX=1 -I/usr/include/mbisdk myprogram.cpp -lmbisdk -o myprogr
 
 Without it the headers fall through to the MSVC `__declspec` path and will not compile under GCC.
 
-The API is identical to Windows — everything in this README applies unchanged, apart from the
-Python bindings, which are currently shipped for Windows only.
+The API is identical to Windows — everything in this README applies unchanged. Python bindings are
+available for Linux as a wheel; see below.
 
 ---
 
@@ -262,12 +264,12 @@ MBISDK::COOIMMSSpectrum<int32_t> immsCoo = frame->GetFrameIMMSSpectrumAsCOO();
 // immsCoo.data / .rowIndices / .columnIndices as above, plus immsCoo.mz
 ```
 
-If you would rather write into your own buffers than take the returned structure, use
+If you would rather write into your own preallocated buffers than take the returned structure, use
 `GetFrameDataAsCSRComponents(&data, &indices, &indptr)`.
 
 ### Scan-level access
 
-Use these when you want one specific arrival-time bin — not as a way to traverse a frame.
+Use these when you want one specific mass spectrum. 
 
 ```cpp
 // Which rows are non-empty
@@ -286,7 +288,7 @@ TOF-indexed (`GetScanDataToFIndexedSparse`) and dense (`GetScanDataMzIndexedDens
 `GetScanDataToFIndexedDense`) variants are available. `GetScanSummationToFIndexedDense()` sums a
 range of scans without materializing them individually.
 
-### Mass calibration
+### Mass calibration evaluation
 
 ```cpp
 MBISDK::TofCalibration tofCal = f.GetCalibration();
@@ -362,7 +364,7 @@ f.GetMaxNumScansPerFrame();
 
 ### Fragmentation and scan definitions
 
-Collision energy for a fragmentation frame:
+Collision energy for an MS2 frame:
 
 ```cpp
 if (frame->IsCollisionEnergyValid())
@@ -373,25 +375,56 @@ if (frame->IsCollisionEnergyValid())
 
 ### Memory management
 
-Frame data is cached once loaded. For long files, release frames you are finished with:
+MBIFile holds Frames in a weak-pointer cache; release of a loaded frame's memory happens once the last strong holder lets go. There is no need to explicitly unload or uncache frames, but no-op calls are present for backwards compatibility.
 
-```cpp
-f.UnloadFrame(frameIndex);   // free the frame's data
-f.UncacheFrame(frameIndex);  // drop the cached frame object
-```
-
-Call `f.Close()` when done.
+Call `f.Close()` when done reading from the file.
 
 ---
 
 ## Python bindings
 
-SWIG-generated Python bindings ship for Windows in `lib/win-x64/swig-python/`, as `mbisdk.py` and
-`_mbisdk.pyd`.
+SWIG-generated Python bindings ship for both platforms.
+
+**Linux** — a wheel in `lib/linux-x64/swig-python/`:
+
+```bash
+pip install mbisdk-1.13.0.11740-cp39-cp39-linux_x86_64.whl
+```
+
+The wheel is self-contained: it bundles `libhdf5.so.200` and `libhdf5_cpp.so.200` and resolves them
+through a `$ORIGIN` runpath, so it does not require the `.deb`/`.rpm` to be installed first.
+
+Two constraints worth knowing before you plan around it:
+
+- The wheel is tagged `cp39-cp39`, so pip will install it on **CPython 3.9 only**, despite the
+  broader range advertised in the package classifiers. Other versions need a rebuild.
+- It carries the same **1.13.0** version label as the Linux packages, for the same reason. The code
+  is 1.13.1.
+
+**Windows** — `mbisdk.py` and `_mbisdk.pyd` in `lib/win-x64/swig-python/`.
 Put that directory on `sys.path` (with `MBI_SDK.dll` findable) and the C++ API is available
 essentially unchanged:
 
+### Reading a frame in Python
+
+Data can be loaded into scipy.sparse.csr_array through a brief series of steps.  In that form slicing, arithmetic, format conversions, and the like are readily available.
+
+Use **`GetFrameDataAsCSRComponents()`**. Unlike the C++ signature, which writes through output
+pointers, the SWIG binding takes no arguments and returns a 4-tuple — the `bool` result followed by
+the three vectors:
+
 ```python
+ok, data, indices, indptr = frame.GetFrameDataAsCSRComponents()
+```
+
+From there, treat the frame as a **SciPy sparse CSR array**. That is what the components are: `data`,
+`indices`, and `indptr` are exactly SciPy's CSR triple, so they go straight into `csr_matrix` with no
+rearrangement, and the whole of `scipy.sparse` applies afterwards — slicing, arithmetic, `.tocoo()`,
+`.sum(axis=...)`, matrix products.
+
+```python
+import numpy as np
+from scipy.sparse import csr_array
 import mbisdk
 
 f = mbisdk.MBIFile("example.mbi")
@@ -399,18 +432,32 @@ f.Init()
 if f.GetErrorCode() != 0:
     raise RuntimeError(f.GetErrorMessage())
 
-print(f.GetVersion(), f.GetNumFrames())
-
+cal = f.GetCalibration()
 frame = f.GetFrame(0)
-csr = frame.GetFrameDataAsCSRArray()
-coo = frame.GetFrameDataAsCOOArray()
 
+ok, data, indices, indptr = frame.GetFrameDataAsCSRComponents()
+
+# Copy out of the SWIG vector wrappers once, with explicit dtypes.
+data    = np.array(data,    dtype=np.float32)   # ion counts
+indices = np.array(indices, dtype=np.int64)     # TOF sample index (column)
+indptr  = np.array(indptr,  dtype=np.int64)     # row boundaries
+
+n_rows = indptr.size - 1
+n_cols = frame.GetMaxPointsInScan()
+frame_csr = csr_array((data, indices, indptr), shape=(n_rows, n_cols))
+
+frame.Unload()
 f.Close()
 ```
 
-The same guidance applies: pull whole frames as sparse arrays rather than iterating scans. The
-returned index and data vectors are SWIG wrappers over `std::vector`, so convert them to NumPy
-arrays once (`numpy.asarray(...)`) rather than indexing them element-by-element in Python.
+Pass the shape explicitly. `GetMaxPointsInScan()` is the frame's column count — it is what the SDK
+itself uses when it builds a `CSRArray` or `COOArray` internally. Letting SciPy infer the shape
+instead gives a column count set by the highest occupied TOF sample in that particular frame, so
+frames end up with inconsistent widths and cannot be stacked or compared.
+
+ Call `frame.Unload()` when finished to release the frame's data.
+
+The same code runs on either platform.
 
 ---
 
@@ -441,18 +488,17 @@ arrays once (`numpy.asarray(...)`) rather than indexing them element-by-element 
 
 The complete API reference, generated with Doxygen, is in [`doc/html/index.html`](doc/html/index.html).
 
-A worked demonstration program — opening a file, pulling frames as CSR and COO arrays, exercising the
-mass calibration, and exporting a frame to CSV in coordinate format — is available in the
-`MBISDK_demo` example project.
+A worked demonstration program is in [`examples/MBISDK_demo`](examples/MBISDK_demo) — opening a file,
+pulling frames as CSR and COO arrays, exercising the mass calibration, and exporting a frame to CSV
+in coordinate format. Open `MBISDK_demo.sln`, build the x64 configuration, and run it against an
+`.mbi` file of your own; the project is already wired to the `include/` and `lib/win-x64/` in this
+repository.
 
 ---
 
 ## Maintainer
 
 Principal maintainer: **Bennett Kalafut** — <bennett.kalafut@mobilionsystems.com>
-
-Note that MBI has no obligation to support the SDK under the terms of the license below; direct
-questions and bug reports here on a best-effort basis.
 
 ---
 
