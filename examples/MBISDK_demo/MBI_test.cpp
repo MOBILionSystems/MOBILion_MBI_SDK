@@ -39,9 +39,12 @@ int main(int argc, char *argv[])
     std::cout << "Number of frames: " << f.GetNumFrames() << std::endl;
     std::cout << "Requested frame index:" << frameIndex << std::endl;
 
-    if (frameIndex >= f.GetNumFrames())
+    // Frame indices are 1-based: valid range is 1 .. GetNumFrames() inclusive.
+    // GetFrame() returns a null pointer outside that range.
+    if (frameIndex < 1 || frameIndex > f.GetNumFrames())
     {
-        std::cout << "Frame index out of bounds." << std::endl;
+        std::cout << "Frame index out of bounds.  Valid range is 1 to "
+                  << f.GetNumFrames() << "." << std::endl;
         return 0;
     }
 

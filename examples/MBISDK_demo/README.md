@@ -38,7 +38,7 @@ For example:
 MBISDK_demo.exe sample.mbi 1
 ```
 
-Frame indices are zero-based and must be less than `GetNumFrames()`. The program writes
-`COO_test.csv` into the working directory.
+Frame indices are **1-based**: the valid range is `1` to `GetNumFrames()` inclusive. The program
+writes `COO_test.csv` into the working directory.
 
 No sample `.mbi` file is included; supply one of your own.

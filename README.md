@@ -9,6 +9,42 @@ Principal maintainer: Bennett Kalafut &lt;bennett.kalafut@mobilionsystems.com&gt
 
 The SDK exposes IM-MS profile data, metadata, and CCS calibrations.
 
+The native library is C++, for Windows and Linux. **Python bindings** are available for Windows and Linux, and **.NET bindings** are avaialable for Windows.
+
+---
+
+## Table of contents
+
+- [Contents](#contents)
+  - [Headers](#headers)
+- [Requirements](#requirements)
+- [Setting up a project (Windows)](#setting-up-a-project-windows)
+- [Setting up a project (Linux)](#setting-up-a-project-linux)
+- [Quick start](#quick-start)
+- [Data model](#data-model)
+- [Common tasks](#common-tasks)
+  - [Reading a frame as a sparse array](#reading-a-frame-as-a-sparse-array)
+  - [Scan-level access](#scan-level-access)
+  - [Mass calibration evaluation](#mass-calibration-evaluation)
+  - [CCS calibration](#ccs-calibration)
+  - [Metadata](#metadata)
+  - [File-level summaries](#file-level-summaries)
+  - [Fragmentation and scan definitions](#fragmentation-and-scan-definitions)
+  - [Memory management](#memory-management)
+- [Error handling](#error-handling)
+- [Python bindings](#python-bindings)
+  - [Reading a frame in Python](#reading-a-frame-in-python)
+- [.NET bindings](#net-bindings)
+  - [Deployment](#deployment)
+  - [Quick start (C#)](#quick-start-c)
+  - [Reading a frame as a sparse array (C#)](#reading-a-frame-as-a-sparse-array-c)
+  - [Calibrations (C#)](#calibrations-c)
+  - [File-level summaries (C#)](#file-level-summaries-c)
+  - [Differences from the C++ API](#differences-from-the-c-api)
+- [Further documentation](#further-documentation)
+- [Maintainer](#maintainer)
+- [License](#license)
+
 ---
 
 ## Contents
@@ -19,6 +55,7 @@ The SDK exposes IM-MS profile data, metadata, and CCS calibrations.
 | `lib/win-x64/MBI_SDK.dll` | Runtime library (Windows x64) |
 | `lib/win-x64/MBI_SDK.lib` | Import library for linking |
 | `lib/win-x64/swig-python/` | SWIG-generated Python bindings (`mbisdk.py`, `_mbisdk.pyd`) |
+| `lib/win-x64/MBISDK.NET/` | .NET bindings, for .NET 8 and .NET Framework 4.7.2 |
 | `lib/linux-x64/` | Linux x86-64 packages (`.deb` and `.rpm`) |
 | `lib/linux-x64/swig-python/` | Python bindings for Linux, as a wheel |
 | `examples/MBISDK_demo/` | Worked Visual Studio example project |
@@ -185,7 +222,10 @@ An MBI file is a sequence of **frames**. Each frame is one point in retention ti
 **sparse 2-D array** of ion counts indexed by (ion mobility arrival-time bin, TOF sample index).
 A single row of that array — one arrival-time bin — is a mass spectrum, referred to as a *scan*.
 
-- Frame indices run from `0` to `GetNumFrames() - 1`.
+- **Frame indices are 1-based**: valid indices run from `1` to `GetNumFrames()` inclusive.
+  `GetFrame(0)` is rejected and returns a null pointer with `GetErrorCode() == ERR_BAD_FRAME_INDEX`.
+  Note that per-frame *summary* vectors such as `GetRetentionTimes()` are plain zero-based
+  `std::vector`s, so frame `n` is at offset `n - 1` in those.
 - The data is genuinely sparse: most cells are zero, and many rows are entirely empty. The SDK
   stores and returns it in sparse form, and nothing is decompressed into a dense array unless you
   explicitly ask for it.
@@ -379,6 +419,31 @@ Call `f.Close()` when done reading from the file.
 
 ---
 
+## Error handling
+
+In the C++ API, `MBIFile` reports failures through error codes rather than exceptions. Check
+`GetErrorCode()` after `Init()` and after any operation that may fail; `GetErrorMessage()` gives a
+description. The Python bindings expose the same codes; the .NET wrapper does not — see
+[Differences from the C++ API](#differences-from-the-c-api).
+
+| Constant | Value | Meaning |
+| --- | --- | --- |
+| `ERR_UNEXPECTED` | -1 | Unexpected error |
+| `ERR_SUCCESS` | 0 | Success |
+| `ERR_FILE_NOT_FOUND` | 1 | File not found |
+| `ERR_HDF5_FILE_ERROR` | 2 | HDF5 read error |
+| `ERR_FILE_NOT_INITIALIZED` | 3 | `Init()` not called or failed |
+| `ERR_METADATA_NOT_LOADED` | 101 | Metadata not loaded |
+| `ERR_FRAME_NOT_LOADED` | 102 | Frame data not loaded |
+| `ERR_DOUBLE_LOAD` | 103 | Frame loaded twice |
+| `ERR_BAD_FRAME_INDEX` | 201 | Frame index out of range |
+| `ERR_BAD_SCAN_INDEX` | 202 | Scan index out of range |
+| `ERR_ITEM_MISSING` | 301 | Requested item not present |
+| `ERR_OPERATION_NOT_SUPPORTED` | 401 | Operation not supported |
+| `ERR_ZERO_FRAMES` | 501 | File contains no frames |
+
+---
+
 ## Python bindings
 
 SWIG-generated Python bindings ship for both platforms.
@@ -431,7 +496,7 @@ if f.GetErrorCode() != 0:
     raise RuntimeError(f.GetErrorMessage())
 
 cal = f.GetCalibration()
-frame = f.GetFrame(0)
+frame = f.GetFrame(1)          # frame indices are 1-based
 
 ok, data, indices, indptr = frame.GetFrameDataAsCSRComponents()
 
@@ -459,26 +524,168 @@ The same code runs on either platform.
 
 ---
 
-## Error handling
+## .NET bindings
 
-`MBIFile` reports failures through error codes rather than exceptions. Check `GetErrorCode()` after
-`Init()` and after any operation that may fail; `GetErrorMessage()` gives a description.
+`MBISDK.NET` is a mixed-mode .NET wrapper over the native SDK, in namespace `MBISDK_DOTNET`. Two builds--one for .NET Core and one for .NET Framework 4.7.2--ship
+in `lib/win-x64/MBISDK.NET/`
 
-| Constant | Value | Meaning |
+| Archive | Target | Contents |
 | --- | --- | --- |
-| `ERR_UNEXPECTED` | -1 | Unexpected error |
-| `ERR_SUCCESS` | 0 | Success |
-| `ERR_FILE_NOT_FOUND` | 1 | File not found |
-| `ERR_HDF5_FILE_ERROR` | 2 | HDF5 read error |
-| `ERR_FILE_NOT_INITIALIZED` | 3 | `Init()` not called or failed |
-| `ERR_METADATA_NOT_LOADED` | 101 | Metadata not loaded |
-| `ERR_FRAME_NOT_LOADED` | 102 | Frame data not loaded |
-| `ERR_DOUBLE_LOAD` | 103 | Frame loaded twice |
-| `ERR_BAD_FRAME_INDEX` | 201 | Frame index out of range |
-| `ERR_BAD_SCAN_INDEX` | 202 | Scan index out of range |
-| `ERR_ITEM_MISSING` | 301 | Requested item not present |
-| `ERR_OPERATION_NOT_SUPPORTED` | 401 | Operation not supported |
-| `ERR_ZERO_FRAMES` | 501 | File contains no frames |
+| `MBISDK_DOTNET-1.13.1-Release-NetCore.zip` | .NET 8 (`net8.0`) | `MBISDK_DOTNET.dll`, `Ijwhost.dll`, `MBI_SDK.dll` |
+| `MBISDK_DOTNET-1.13.1-Release-NetFramework.zip` | .NET Framework 4.7.2 | `MBISDK_DOTNET.dll`, `MBI_SDK.dll` |
+
+Both are x64 only, and Windows only — C++/CLI does not build for Linux. Each archive is flat: unzip
+it and copy the DLLs next to your executable.
+
+The two differ only in the target framework of `MBISDK_DOTNET.dll`; both carry the same read-only
+build of the native `MBI_SDK.dll`, and the managed API is identical.
+
+### Deployment
+
+Reference `MBISDK_DOTNET.dll` from your project and make sure the native `MBI_SDK.dll` sits beside
+your executable, or elsewhere on the DLL search path. It is loaded at runtime by the wrapper, not
+resolved by the .NET assembly loader, so a missing copy surfaces late as a `DllNotFoundException`
+or `BadImageFormatException` rather than at build time.
+
+For the .NET 8 build, `Ijwhost.dll` must be deployed alongside as well. It is the shim that lets a
+mixed-mode C++/CLI assembly start the .NET runtime, and there is no managed fallback if it is
+absent.
+
+Your project must target **x64** explicitly. `AnyCPU` will fail at load time against a 64-bit
+mixed-mode assembly.
+
+### Quick start (C#)
+
+The constructor opens *and* initializes the file — there is no separate `Init()` call. `MBIFile` and
+`Frame` are both `IDisposable`, and hold native memory, so scope them with `using`.
+
+```csharp
+using MBISDK_DOTNET;
+
+using var f = new MBIFile(@"C:\data\example.mbi");
+
+Console.WriteLine($"Number of frames: {f.NumFrames()}");
+Console.WriteLine($"Polarity: {f.GetPolarity()}");
+Console.WriteLine($"Acquired: {f.GetAcquisitionTimestamp():u}");
+```
+
+### Reading a frame as a sparse array (C#)
+
+`Frame.GetFrameIMMSDataAsCSR()` is the .NET equivalent of the C++ `GetFrameIMMSSpectrumAsCSR()`. It
+returns a `CSRIMMSSpectrum`: the CSR triple plus a calibrated `mz` axis, as managed arrays.
+
+```csharp
+using var frame = f.GetFrame(1);          // frame indices are 1-based
+
+using var csr = frame.GetFrameIMMSDataAsCSR(false);   // false = do not pad with zeroes
+
+Console.WriteLine($"{csr.nnz} nonzero points in a {csr.nRows} x {csr.nColumns} array");
+
+// Row (arrival-time bin) r spans [indptr[r], indptr[r+1]) in data/indices.
+for (long r = 0; r + 1 < csr.indptr.Length; ++r)
+{
+    for (long k = csr.indptr[r]; k < csr.indptr[r + 1]; ++k)
+    {
+        long tofIndex  = csr.indices[k];
+        int  intensity = csr.data[k];
+        double mz      = csr.mz[k];
+        // ...
+    }
+}
+```
+
+Coordinate form, for export or flat iteration:
+
+```csharp
+using var coo = frame.GetFrameIMMSDataAsCOO(false);
+
+for (long i = 0; i < coo.nnz; ++i)
+{
+    long arrivalBin = coo.rowIndices[i];
+    long tofIndex   = coo.columnIndices[i];
+    int  intensity  = coo.data[i];
+    double mz       = coo.mz[i];
+    // ...
+}
+```
+
+Both types also expose PascalCase properties (`Data`, `Indices`, `Indptr`, `RowIndices`,
+`ColumnIndices`, `Mz`, `NRows`, `NColumns`, `Nnz`, `IsZeroPadded`) implementing the
+`MBISparse.Contracts` interfaces, if you prefer to program against those.
+
+The mapping of row indices to arrival times is available in physical units:
+
+```csharp
+double[] arrivalTimes = frame.GetArrivalTimeAxis();
+double   binWidth     = frame.GetATBinWidth();
+```
+
+### Calibrations (C#)
+
+```csharp
+if (f.HasCCSCalibration())
+{
+    using var ccsCal = f.GetCCSCalibration();
+
+    double ccs   = ccsCal.ArrivalTimeToCCS(arrivalTimeMs, ionMz);      // assumes Z = 1
+    double ccs3p = ccsCal.ArrivalTimeToCCS(arrivalTimeMs, ionMz, 3);   // charge state 3
+
+    double at = ccsCal.CCSToArrivalTime(ccs, ionMz);                   // inverse
+
+    var (ccsMin, ccsMax) = (ccsCal.GetCCSMinimum(), ccsCal.GetCCSMaximum());
+    double[] coefficients = ccsCal.GetCCSCoefficients();               // lowest-order first
+}
+
+using var tofCal = f.GetTofCalibration();
+double slope     = tofCal.Slope();
+double intercept = tofCal.Intercept();
+```
+
+There is a batch overload of `ArrivalTimeToCCS` taking and returning
+`Tuple<long, double, double>[]`, which is considerably cheaper than calling the scalar form in a
+loop.
+
+### File-level summaries (C#)
+
+```csharp
+double rt        = f.GetFrameRT(frameIndex);        // 1-based
+int    msLevel   = f.GetMSLevel(frameIndex);        // 1-based
+int    numScans  = f.GetFrameNumScans(frameIndex);  // 1-based
+long   frameTic  = f.GetFrameTIC(frameIndex);       // 1-based
+
+double[] arrivalAxis = f.GetConsensusArrivalTimeAxis();
+double[] ces         = f.GetConstantCollisionEnergies();
+
+// Collision energy -> the frames collected at it
+Dictionary<double, List<int>> ceMap = f.CollisionEnergyMapping();
+
+// Retention times and per-frame TIC, as a chromatogram
+var (times, intensities) = f.GetChromatogram();
+```
+
+`GetChromatogram()` and `GetFrameTIC()` throw `System.IO.FileFormatException` on files with no
+`RT_TIC` data. The chromatogram is marshalled once and cached, so repeat calls are cheap.
+
+### Differences from the C++ API
+
+The wrapper is not a mechanical one-to-one mapping. The differences that matter in practice:
+
+- **Naming.** `MBIFile.NumFrames()`, not `GetNumFrames()`. Frame data comes from
+  `GetFrameIMMSDataAsCSR()` / `GetFrameIMMSDataAsCOO()`, not `GetFrameIMMSSpectrumAsCSR()`.
+- **Frame indices are uniformly one-based.** `GetFrame()` is 1-based, matching the native SDK.
+   So are `GetFrameRT()`, `GetMSLevel()`, `GetFrameNumScans()` and `GetFrameTIC()`, which subtract internally before
+  indexing their zero-based backing vectors. Passing a 0-based index yields either an exception or
+  the wrong frame's metadata.
+- **Only the IMMS forms are exposed.** Every frame read carries the calibrated `mz` axis; there is no
+  managed equivalent of the bare `GetFrameDataAsCSRArray()`.
+- **No scan-level accessors.** `GetMassSpectrum()`, `GetScanDataMzIndexedSparse()` and their
+  relatives have no managed counterpart. Take the frame as CSR and slice the row you want.
+- **Error codes are not surfaced.** There is no managed `GetErrorCode()`; failures arrive as .NET
+  exceptions, and the constructor does not currently report a failed `Init()`. Check that the file
+  exists and that `NumFrames()` is plausible before relying on the contents.
+- **Indices are `Int64`**, not `size_t`, in the managed arrays.
+- **Lifetime is deterministic..** Both `MBIFile` and `Frame` implement `IDisposable`
+  and manage native memory using their disposal methods.
 
 ---
 
