@@ -5,7 +5,7 @@ produced by the MOBIE® EyeOn acquisition system.
 
 Release `1.13.1`
 
-Principal maintainer: Bennett Kalafut &lt;bennett.kalafut@mobilionsystems.com&gt;
+Principal maintainer: Bennett Kalafut &lt;productfeedback@mobilionsystems.com&gt;
 
 The SDK exposes IM-MS profile data, metadata, and CCS calibrations.
 
