@@ -1,0 +1,36 @@
+# Claude Code / agent tooling
+.claude/
+**/.claude/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sdf
+*.opendb
+*.VC.db
+*.VC.db-shm
+*.VC.db-wal
+
+# Build output
+[Dd]ebug/
+[Rr]elease/
+x64/
+*.obj
+*.pdb
+*.ipdb
+*.iobj
+*.ilk
+*.tlog
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+
+# Doxygen scratch
+doc/html/*.bak
+
+# OS
+Thumbs.db
+.DS_Store

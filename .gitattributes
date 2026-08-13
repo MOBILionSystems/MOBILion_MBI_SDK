@@ -1,0 +1,64 @@
+# ---------------------------------------------------------------------------
+# Line endings
+#
+# The repository stores all text as LF.  Windows-facing files are checked out
+# as CRLF so they open correctly in Visual Studio.  This pairing is what the
+# repository already contains (LF blobs, CRLF working tree), so applying it
+# should produce no content changes -- it only stops every header from
+# appearing modified after a checkout or a rebuild on Windows.
+# ---------------------------------------------------------------------------
+
+* text=auto
+
+# C/C++ sources and project files: CRLF in the working tree.
+*.h                text eol=crlf
+*.hpp              text eol=crlf
+*.c                text eol=crlf
+*.cpp              text eol=crlf
+*.txt              text eol=crlf
+*.rc               text eol=crlf
+*.sln              text eol=crlf
+*.vcxproj          text eol=crlf
+*.vcxproj.filters  text eol=crlf
+*.props            text eol=crlf
+
+# Cross-platform text: LF in the working tree.
+*.md               text eol=lf
+*.yml              text eol=lf
+*.yaml             text eol=lf
+*.sh               text eol=lf
+
+# SWIG-generated Python. CRLF to match how it is currently generated;
+# switch to eol=lf if the binding build moves to Linux.
+*.py               text eol=crlf
+*.i                text eol=crlf
+
+# ---------------------------------------------------------------------------
+# Generated Doxygen output
+#
+# Normalized like any other text, but excluded from diffs and from GitHub's
+# language statistics.  Regenerating the docs otherwise produces hundreds of
+# unreviewable changed files.
+# ---------------------------------------------------------------------------
+
+doc/html/**  -diff
+doc/html/**  linguist-generated=true
+
+# ---------------------------------------------------------------------------
+# Binaries -- never modify, never diff.
+# ---------------------------------------------------------------------------
+
+*.dll  binary
+*.lib  binary
+*.pyd  binary
+*.exe  binary
+*.obj  binary
+*.pdb  binary
+*.rpm  binary
+*.deb  binary
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.mbi  binary
