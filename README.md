@@ -11,6 +11,8 @@ The SDK exposes IM-MS profile data, metadata, and CCS calibrations.
 
 The native library is C++, for Windows and Linux. **Python bindings** are available for Windows and Linux, and **.NET bindings** are available for Windows.
 
+Please fill out [this contact form](https://go.mobilionsystems.com/l/1089062/2026-08-13/3h86w5) to be alterted to future updates.
+
 ---
 
 ## Table of contents
@@ -705,6 +707,7 @@ repository.
 
 Principal maintainer: **Bennett Kalafut** 
 Email: <productfeedback@mobilionsystems.com>
+Please fill out [this contact form](https://go.mobilionsystems.com/l/1089062/2026-08-13/3h86w5) to subscribe to future updates.
 
 ---
 
