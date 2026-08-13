@@ -9,7 +9,7 @@ Principal maintainer: Bennett Kalafut &lt;bennett.kalafut@mobilionsystems.com&gt
 
 The SDK exposes IM-MS profile data, metadata, and CCS calibrations.
 
-The native library is C++, for Windows and Linux. **Python bindings** are available for Windows and Linux, and **.NET bindings** are avaialable for Windows.
+The native library is C++, for Windows and Linux. **Python bindings** are available for Windows and Linux, and **.NET bindings** are available for Windows.
 
 ---
 
