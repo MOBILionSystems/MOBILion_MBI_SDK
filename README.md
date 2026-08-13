@@ -7,9 +7,7 @@ Release `1.13.1`
 
 Principal maintainer: Bennett Kalafut &lt;bennett.kalafut@mobilionsystems.com&gt;
 
-The SDK exposes metadata, raw and calibrated mass spectral data, ion mobility (arrival time) data,
-TOF mass calibrations, and CCS calibrations. MBI files are HDF5-based; the SDK handles HDF5 access
-internally, so no separate HDF5 dependency is required.
+The SDK exposes IM-MS profile data, metadata, and CCS calibrations.
 
 ---
 
