@@ -703,7 +703,8 @@ repository.
 
 ## Maintainer
 
-Principal maintainer: **Bennett Kalafut** — <bennett.kalafut@mobilionsystems.com>
+Principal maintainer: **Bennett Kalafut** 
+Email: <productfeedback@mobilionsystems.com>
 
 ---
 
