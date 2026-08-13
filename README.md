@@ -693,7 +693,7 @@ The wrapper is not a mechanical one-to-one mapping. The differences that matter 
 
 The complete API reference, generated with Doxygen, is in [`doc/html/index.html`](doc/html/index.html).
 
-A worked demonstration program is in [`examples/MBISDK_demo`](examples/MBISDK_demo) — opening a file,
+A worked demonstration program is in [`examples/MBISDK_demo`](examples/MBISDK_demo) , including opening a file,
 pulling frames as CSR and COO arrays, exercising the mass calibration, and exporting a frame to CSV
 in coordinate format. Open `MBISDK_demo.sln`, build the x64 configuration, and run it against an
 `.mbi` file of your own; the project is already wired to the `include/` and `lib/win-x64/` in this
